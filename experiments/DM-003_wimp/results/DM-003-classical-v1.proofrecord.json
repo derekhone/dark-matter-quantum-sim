@@ -1,0 +1,21 @@
+{
+  "experiment_id": "DM-003-classical-v1",
+  "series": "dark-matter-quantum-sim",
+  "model": "wimp_nucleon_exchange",
+  "timestamp_utc": "2026-08-02T00:07:39Z",
+  "parameters": {
+    "g": 1.0,
+    "coupling": "XX+YY exchange"
+  },
+  "observable": "spin_flip_probability_01_to_10",
+  "result": {
+    "max_abs_diff_sim_vs_closed_form": 1.1102230246251565e-15,
+    "t_quarter": 0.7853981633974483,
+    "flip_at_quarter": 1.0,
+    "closed_form_at_quarter": 1.0
+  },
+  "threshold": "P = sin^2(2 g t) +/- 5% at t = pi/(4g); kill if >1% sim-vs-closed",
+  "verdict": "PASS",
+  "honest_scope": "toy Hamiltonian classical simulation only; not detection of real dark matter",
+  "record_hash": "4c2b7c73c55af3b8dc0bde6919d5d58dcf7314ef4ee744f639a8b6c46f23c749"
+}

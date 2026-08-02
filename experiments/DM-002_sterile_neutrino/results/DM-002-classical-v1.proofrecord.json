@@ -1,0 +1,25 @@
+{
+  "experiment_id": "DM-002-classical-v1",
+  "series": "dark-matter-quantum-sim",
+  "model": "sterile_neutrino_2flavor",
+  "timestamp_utc": "2026-08-02T00:07:38Z",
+  "parameters": {
+    "delta_m2": 1.0,
+    "energy": 1.0,
+    "theta": 0.7853981633974483,
+    "mixing": "maximal (pi/4)"
+  },
+  "observable": "survival_probability_P_mu_mu",
+  "result": {
+    "max_abs_diff_analytic_vs_matrix": 7.771561172376096e-16,
+    "L_report": 1.0,
+    "analytic_at_L": 0.08778235566138881,
+    "matrix_at_L": 0.08539336391756429,
+    "min_survival": 1.2054125051341735e-05,
+    "max_survival": 1.0
+  },
+  "threshold": "matrix vs analytic within 10%; kill if >1% classical-vs-analytic",
+  "verdict": "PASS",
+  "honest_scope": "toy Hamiltonian classical simulation only; not detection of real dark matter",
+  "record_hash": "9f8da3e3f10d72c75623ed91c7dc0d79213cb03dbe9e8509ef7b108a6e572d8c"
+}

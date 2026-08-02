@@ -1,0 +1,23 @@
+{
+  "experiment_id": "DM-001-classical-v1",
+  "series": "dark-matter-quantum-sim",
+  "model": "axion_pq_potential",
+  "timestamp_utc": "2026-08-02T00:07:37Z",
+  "parameters": {
+    "omega_0": 1.0,
+    "lambda": 0.3
+  },
+  "observable": "sigma_z_expectation",
+  "result": {
+    "measured_period": 1.5464335941555682,
+    "target_period": 6.283185307179586,
+    "relative_error": 0.7538774493267755,
+    "sigma_z_first": 1.0,
+    "sigma_z_min": 0.9559902214561764,
+    "sigma_z_max": 1.0
+  },
+  "threshold": "T within 5% of 2*pi/omega_0",
+  "verdict": "FAIL",
+  "honest_scope": "toy Hamiltonian classical simulation only; not detection of real dark matter",
+  "record_hash": "cadf4c87940f78b60e6f1ee6436c829640de404b5769db44f63313f55d1ccb67"
+}

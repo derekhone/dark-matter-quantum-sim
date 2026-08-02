@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# IBM Q credentials - NEVER commit tokens
+.qiskit/
+*.token
+ibmq_credentials*
+
+# Experiment results:
+#   - published ProofRecords (*.proofrecord.json) ARE tracked (publish-regardless covenant)
+#   - any other raw run artifacts are ignored
+experiments/**/results/*.json
+!experiments/**/results/*.proofrecord.json
+!experiments/**/results/.gitkeep

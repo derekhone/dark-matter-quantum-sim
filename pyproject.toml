@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dark-matter-quantum-sim"
+version = "0.1.0a1"
+description = "Preregistered, ProofRecord-governed quantum simulation of toy dark matter candidate Hamiltonians (Remnant Fieldworks Inc.)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Derek Hone", email = "derek@executionproof.io" }]
+keywords = [
+    "quantum-simulation",
+    "dark-matter",
+    "axion",
+    "sterile-neutrino",
+    "wimp",
+    "preregistration",
+    "proofrecord",
+    "ibm-quantum",
+    "qiskit",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "numpy>=1.21",
+    "scipy>=1.7",
+    "matplotlib>=3.4",
+]
+
+[project.optional-dependencies]
+ibmq = [
+    "qiskit>=1.0",
+    "qiskit-aer>=0.14",
+    "qiskit-ibm-runtime>=0.20",
+]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.urls]
+Homepage = "https://executionproof.io"
+Repository = "https://github.com/derekhone/dark-matter-quantum-sim"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
