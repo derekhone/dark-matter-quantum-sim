@@ -1,3 +1,9 @@
+> **Repository Role:** Research Prototype — Toy Dark Matter Hamiltonian Simulation (Honest Scope: No Real DM Detection) · Part of the [Remnant Fieldworks](https://remnantfieldworks.com) research and product ecosystem
+
+**Where this fits:** This is an exploratory research prototype — toy Hamiltonian simulations governed by ProofRecord methodology. These simulations do not detect real dark matter or make claims about physical reality beyond what the toy models demonstrate. This repository showcases ProofRecord governance applied to a high-curiosity domain. For the commercial product, see [ExecutionProof](https://executionproof.io).
+
+---
+
 # dark-matter-quantum-sim
 
 **Preregistered, ProofRecord-governed quantum simulation of toy dark matter candidate Hamiltonians.**
