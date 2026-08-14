@@ -180,3 +180,110 @@ Upon writing `sha256(PREREGISTRATION.md)` to `MANIFEST.sha256`, sections 1–4 a
 frozen for version `v1` of the `dark-matter-quantum-sim` series. Any change to a question,
 Hamiltonian, observable, threshold, or kill condition requires a new preregistration
 (`v2`) with a new hash and a new dated entry.
+---
+
+## PREREGISTRATION v2 AMENDMENT — DM-004 and DM-005
+
+**Amendment date:** 2026-08-13
+**Status:** LOCKED (hash recorded in `MANIFEST.sha256` as `v2`)
+
+This amendment adds two new experiments to the `dark-matter-quantum-sim` series.
+Sections 0–4 of the original preregistration remain in force. The honest scope
+(§1), kill condition (§3), and publication rule (§4) apply unchanged to DM-004
+and DM-005.
+
+---
+
+### EXPERIMENT DM-004 — Dark Photon Kinetic Mixing (Off-Resonance γ–A′ Oscillation)
+
+**Question.** Does a 2-qubit toy model of kinetic mixing between a visible photon
+and a dark photon reproduce the analytic off-resonance conversion probability?
+
+**Background.** The dark photon (A′) is a hypothetical massive gauge boson that
+couples to the Standard Model photon via a kinetic mixing parameter ε (Holdom,
+1986). In a simplified 2-level model, a visible photon with frequency ω_γ mixes
+with a dark photon of frequency ω_{A′} through the coupling ε. When ω_γ ≠ ω_{A′}
+(off-resonance), the maximum conversion probability is suppressed by the detuning:
+
+    P_max = ε² / (Δ² + ε²)
+
+where Δ = ω_γ − ω_{A′}.
+
+**Hamiltonian.**
+```
+H = ω_γ (σ_z ⊗ I) + ω_{A'} (I ⊗ σ_z) + ε (σ_x ⊗ σ_x)
+```
+qubit 0 = visible photon mode, qubit 1 = dark photon mode.
+Parameters: `ω_γ = 1.0`, `ω_{A'} = 1.3`, `ε = 0.5`.
+
+**Observable.** Conversion probability
+```
+P(γ → A', t) = [ε² / (Δ² + ε²)] sin²(√(Δ² + ε²) · t)
+```
+Initial state `|10⟩` (one visible photon, no dark photon).
+
+**Classical method.** Exact matrix exponentiation.
+**IBM Q circuit.** Trotterized evolution: `RZ` rotations for diagonal terms +
+Hadamard-CNOT-RZ-CNOT-Hadamard sandwich for `XX` coupling. 6 Trotter steps.
+
+**Preregistered threshold.**
+- Classical: `P_max` at `t = π/(2Ω)` matches `ε²/(Δ²+ε²)` within **±5%**.
+- Kill condition: sim vs analytic must agree within 1% at all sampled points (§3).
+- IBM Q: hardware conversion probability at the peak time matches the analytic
+  prediction within **10%**.
+- Verdict `PASS` iff the classical peak matches within ±5% and kill condition is clear.
+
+---
+
+### EXPERIMENT DM-005 — Majorana Mass (Seesaw Mechanism Toy Model)
+
+**Question.** Does a 2-qubit toy model of the Dirac–Majorana mass matrix reproduce
+the analytic seesaw-suppressed lepton-number-violation probability?
+
+**Background.** The type-I seesaw mechanism (Minkowski 1977; Yanagida 1979;
+Gell-Mann, Ramond, Slansky 1979) introduces heavy right-handed Majorana
+neutrinos to explain the smallness of observed neutrino masses:
+`m_light ≈ m_D² / M_R`. The Majorana mass term violates lepton number
+conservation by 2 units (ΔL = 2). In a 2-qubit toy model, the Dirac mass
+`m_D` couples the two neutrino modes via `XX`, while the Majorana mass `M_R`
+introduces an energy splitting via `IZ`. The system block-diagonalizes into
+two 2×2 sectors, and the lepton-number-violation probability exhibits the
+characteristic seesaw suppression in the `M_R ≫ m_D` regime.
+
+**Hamiltonian.**
+```
+H = m_D (σ_x ⊗ σ_x) + (M_R / 2) (I ⊗ σ_z)
+```
+qubit 0 = left-handed neutrino, qubit 1 = right-handed neutrino.
+Parameters: `m_D = 0.5`, `M_R = 2.0` (seesaw ratio `M_R / m_D = 4`).
+
+**Observable.** Lepton-number-violation probability
+```
+P_LNV(t) = (m_D / Ω)² sin²(Ω t)
+```
+where `Ω = √(m_D² + (M_R/2)²)`.
+Initial state `|00⟩` (active neutrino, lepton number +1).
+
+**Classical method.** Exact matrix exponentiation.
+**IBM Q circuit.** Trotterized evolution: Hadamard-CNOT-RZ-CNOT-Hadamard for `XX`
++ `RZ` on qubit 1 for `IZ`. 6 Trotter steps.
+
+**Preregistered threshold.**
+- Classical: `P_max` at `t = π/(2Ω)` matches `(m_D/Ω)²` within **±5%**.
+- Kill condition: sim vs analytic must agree within 1% at all sampled points (§3).
+- IBM Q: hardware LNV probability at the peak time matches the analytic
+  prediction within **10%**.
+- Verdict `PASS` iff the classical peak matches within ±5% and kill condition is clear.
+
+> **Seesaw interpretation note (frozen here before hardware results):** At
+> `M_R/m_D = 4`, the exact `P_max = m_D²/(m_D² + M_R²/4) = 0.20`, while the
+> seesaw approximation `4 m_D²/M_R² = 0.25` overestimates by 25% because the
+> ratio is not yet in the deep seesaw regime. Both values are recorded.
+
+---
+
+### v2 Freeze
+
+Upon writing `sha256(PREREGISTRATION.md)` (inclusive of this amendment) to
+`MANIFEST.sha256`, sections 1–4 of v1 plus the DM-004 and DM-005 experiments
+above are frozen for version `v2` of the `dark-matter-quantum-sim` series.
