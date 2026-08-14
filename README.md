@@ -20,7 +20,7 @@ prove that any dark matter candidate particle is real.
 |----|-----------|-------------|-----------|-------|-------|
 | DM-001 | Axion (Peccei–Quinn) | `ω₀(ZI+IZ) + λ(XX)` | **FAIL** | **HOLD** | Honest FAIL: Rabi period ≠ 2π/ω₀ |
 | DM-002 | Sterile neutrino | `(Δm²/4E)(−cos2θ Z + sin2θ X)` | **PASS** | **PASS** | 4.6% error on hardware |
-| DM-003 | WIMP (exchange) | `g(XX+YY)` | **PASS** | **FAIL** | Hardware noise killed exchange |
+| DM-003 | WIMP (exchange) | `g(XX+YY)` | **PASS** | **~~FAIL~~→PASS** | [Erratum](ERRATUM_DM-003.md): bitstring extraction defect; hardware was 98.0% (2.0% error) |
 | DM-004 | Dark Photon (kinetic mixing) | `ω_γ(ZI) + ω_{A'}(IZ) + ε(XX)` | **PASS** | *pending* | Off-resonance oscillation exact |
 | DM-005 | Majorana Mass (seesaw) | `m_D(XX) + (M_R/2)(IZ)` | **PASS** | *pending* | Seesaw suppression P_max=0.20 |
 
