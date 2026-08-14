@@ -118,3 +118,52 @@ classical counterparts:
 - `experiments/DM-001_axion/results/DM-001-ibmq-v1.proofrecord.json`
 - `experiments/DM-002_sterile_neutrino/results/DM-002-ibmq-v1.proofrecord.json`
 - `experiments/DM-003_wimp/results/DM-003-ibmq-v1.proofrecord.json`
+
+---
+
+# RESULTS — classical simulation layer (v2: DM-004 + DM-005)
+
+**Series:** `dark-matter-quantum-sim` · **Run date:** 2026-08-13
+**Preregistration:** v2 amendment locked, SHA-256 in `MANIFEST.sha256`.
+
+Two new experiments added by preregistration v2. Published regardless of verdict.
+
+| Experiment | Model | Preregistered threshold | Result | Verdict |
+|------------|-------|-------------------------|--------|---------|
+| **DM-004** | Dark Photon (kinetic mixing) | `P_max` within 5% of `ε²/(Δ²+ε²)`; kill if >1% | sim vs analytic **2.1e-15**; `P_max = 0.7353` (exact match) | **PASS** |
+| **DM-005** | Majorana Mass (seesaw) | `P_max` within 5% of `(m_D/Ω)²`; kill if >1% | sim vs analytic **7.2e-16**; `P_max = 0.2000` (exact match) | **PASS** |
+
+---
+
+### DM-004 passes cleanly — off-resonance dark photon conversion
+
+The 2-qubit toy Hamiltonian `H = ω_γ(Z⊗I) + ω_{A'}(I⊗Z) + ε(X⊗X)` models
+kinetic mixing between a visible photon mode (qubit 0) and a dark photon mode
+(qubit 1). With `ω_γ = 1.0`, `ω_{A'} = 1.3`, `ε = 0.5`, the detuning
+`Δ = −0.3` suppresses the maximum conversion probability from 1.0 (resonant
+case) to `P_max = ε²/(Δ²+ε²) = 0.7353`.
+
+The matrix exponentiation reproduces the analytic off-resonance oscillation
+formula to **2.1×10⁻¹⁵** — floating-point precision. At the first peak
+`t = π/(2Ω) = 2.694`, the simulated `P_max = 0.735294` matches the analytic
+prediction exactly.
+
+### DM-005 passes — seesaw suppression verified
+
+The Majorana seesaw toy Hamiltonian `H = m_D(X⊗X) + (M_R/2)(I⊗Z)` models the
+Dirac–Majorana mass matrix. Starting from `|00⟩` (left-handed active neutrino),
+the lepton-number-violation probability is
+
+    P_LNV(t) = (m_D/Ω)² sin²(Ωt),    Ω = √(m_D² + (M_R/2)²)
+
+With `m_D = 0.5`, `M_R = 2.0` (seesaw ratio 4:1), the maximum LNV probability
+is `P_max = (m_D/Ω)² = 0.20` — suppressed from unity by the heavy Majorana
+mass. The seesaw approximation `4 m_D²/M_R² = 0.25` overestimates by 25%
+because the ratio is not yet deep seesaw. Both values are recorded honestly.
+
+The simulation reproduces the analytic curve to **7.2×10⁻¹⁶**.
+
+### Classical ProofRecords (v2)
+
+- `experiments/DM-004_dark_photon/results/DM-004-classical-v1.proofrecord.json`
+- `experiments/DM-005_majorana_mass/results/DM-005-classical-v1.proofrecord.json`
