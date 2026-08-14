@@ -84,6 +84,71 @@ def wimp_hamiltonian(g: float = 1.0) -> np.ndarray:
     return H
 
 
+# ---------------------------------------------------------------------------
+# DM-004 : Dark Photon Kinetic Mixing (off-resonance gamma-A' oscillation)
+# ---------------------------------------------------------------------------
+def dark_photon_hamiltonian(
+    omega_gamma: float = 1.0,
+    omega_dark: float = 1.3,
+    epsilon: float = 0.5,
+) -> np.ndarray:
+    r"""H = omega_gamma (Z (x) I) + omega_dark (I (x) Z) + epsilon (X (x) X).
+
+    qubit0 = visible photon mode, qubit1 = dark photon mode.
+    omega_gamma and omega_dark are the mode frequencies; epsilon is the kinetic
+    mixing parameter.  In the single-excitation subspace {|10>, |01>} the
+    effective 2-level system exhibits off-resonance Rabi oscillation with
+    conversion probability
+
+        P(gamma -> A', t) = [eps^2 / (Delta^2 + eps^2)] sin^2(Omega t)
+
+    where Delta = omega_gamma - omega_dark and Omega = sqrt(Delta^2 + eps^2).
+
+    Parameters
+    ----------
+    omega_gamma : visible photon mode frequency.
+    omega_dark  : dark photon mode frequency.
+    epsilon     : kinetic mixing coupling constant.
+    """
+    H = (omega_gamma * kron(SZ, I2)
+         + omega_dark * kron(I2, SZ)
+         + epsilon * kron(SX, SX))
+    return H
+
+
+# ---------------------------------------------------------------------------
+# DM-005 : Majorana Mass (seesaw mechanism toy model)
+# ---------------------------------------------------------------------------
+def majorana_hamiltonian(
+    m_D: float = 0.5,
+    M_R: float = 2.0,
+) -> np.ndarray:
+    r"""H = m_D (X (x) X) + (M_R / 2) (I (x) Z).
+
+    qubit0 = left-handed neutrino, qubit1 = right-handed neutrino.
+    m_D is the Dirac mass coupling, M_R is the Majorana mass.
+
+    The Hamiltonian block-diagonalizes:
+      - Block {|00>, |11>}: (M_R/2) sigma_z + m_D sigma_x
+      - Block {|01>, |10>}: -(M_R/2) sigma_z + m_D sigma_x
+
+    Starting from |00>, the lepton-number-violation probability is
+
+        P_LNV(t) = (m_D / Omega)^2  sin^2(Omega t)
+
+    where Omega = sqrt(m_D^2 + (M_R/2)^2).  In the seesaw limit M_R >> m_D
+    this amplitude is suppressed as ~4 m_D^2 / M_R^2, reproducing the
+    qualitative behavior of the type-I seesaw mechanism.
+
+    Parameters
+    ----------
+    m_D : Dirac mass coupling constant.
+    M_R : Majorana mass.
+    """
+    H = m_D * kron(SX, SX) + (M_R / 2.0) * kron(I2, SZ)
+    return H
+
+
 __all__ = [
     "I2",
     "SX",
@@ -93,4 +158,6 @@ __all__ = [
     "axion_hamiltonian",
     "sterile_neutrino_hamiltonian",
     "wimp_hamiltonian",
+    "dark_photon_hamiltonian",
+    "majorana_hamiltonian",
 ]
