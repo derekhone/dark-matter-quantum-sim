@@ -1,4 +1,9 @@
-"""DM-003 WIMP scattering toy model - IBM Q runner.
+"""DM-003 WIMP scattering toy model - IBM Q runner (CORRECTED).
+
+CORRECTION (2026-08-14): The original runner extracted the spin-flip probability
+from Qiskit bitstring "10", which corresponds to the INITIAL state |01> in the
+math convention, not the target state |10>. The correct bitstring is "01".
+See ERRATUM_DM-003.md for details.
 
 Builds the XX+YY exchange circuit at the quarter period t = pi/(4g), measures
 the |01> -> |10> spin-flip probability on IBM Quantum hardware (or Aer
@@ -56,8 +61,11 @@ def main() -> dict:
     job = backend.run(tqc, shots=SHOTS)
     counts = job.result().get_counts()
     total = sum(counts.values())
-    # |10> in little-endian qiskit bitstring order is "10" -> q1=1,q0=0
-    flip_hw = counts.get("10", 0) / total
+
+    # CORRECTED: |10> in math convention (q0=1, q1=0) maps to Qiskit bitstring
+    # "01" (Qiskit uses big-endian qubit ordering: bitstring "ab" = q1=a, q0=b).
+    # The original runner incorrectly read bitstring "10" (= initial state |01>).
+    flip_hw = counts.get("01", 0) / total
 
     passed = match_threshold(flip_hw, 1.0, THRESHOLD_FRACTION)
     v = verdict(passed, kill_triggered=False)
@@ -68,7 +76,8 @@ def main() -> dict:
         parameters={"g": G, "t_quarter": t_quarter, "shots": SHOTS,
                      "backend": backend_kind},
         observable="spin_flip_probability_01_to_10",
-        result={"counts": counts, "flip_hw": flip_hw, "closed_form": 1.0},
+        result={"counts": counts, "flip_hw": flip_hw, "closed_form": 1.0,
+                "relative_error": abs(1.0 - flip_hw) / 1.0},
         threshold="IBM Q flip prob within 5% of sin^2(2 g t) at t=pi/(4g)",
         verdict=v,
     )
@@ -76,7 +85,7 @@ def main() -> dict:
     save_record(record, out_path)
 
     print("=" * 70)
-    print("DM-003 WIMP - IBM Q run")
+    print("DM-003 WIMP - IBM Q run (CORRECTED)")
     print("=" * 70)
     print(f"  backend            : {backend_kind}")
     print(f"  counts             : {counts}")
