@@ -1,0 +1,30 @@
+{
+  "experiment_id": "DM-002-ibmq-v1",
+  "series": "dark-matter-quantum-sim",
+  "model": "sterile_neutrino_2flavor",
+  "timestamp_utc": "2026-08-13T22:19:00Z",
+  "parameters": {
+    "delta_m2": 1.0,
+    "energy": 1.0,
+    "theta": 0.7853981633974483,
+    "L": 1.0,
+    "shots": 4096,
+    "backend": "hardware",
+    "ibm_backend": "ibm_marrakesh",
+    "job_id": "d9ugu6498n5s7392rnm0"
+  },
+  "observable": "survival_probability_P_mu_mu",
+  "result": {
+    "counts": {
+      "0": 3753,
+      "1": 343
+    },
+    "survival_hw": 0.08374,
+    "analytic": 0.087782,
+    "relative_error": 0.046047
+  },
+  "threshold": "IBM Q survival within 10% of analytic",
+  "verdict": "PASS",
+  "honest_scope": "toy Hamiltonian IBM Quantum hardware simulation; not detection of real dark matter",
+  "record_hash": "2910dbfeafbdc78d2f76388811c2df8960102600660ef43c42ac40192a5b326a"
+}
