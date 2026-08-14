@@ -1,0 +1,25 @@
+{
+  "experiment_id": "DM-005-classical-v1",
+  "series": "dark-matter-quantum-sim",
+  "model": "majorana_seesaw_mixing",
+  "timestamp_utc": "2026-08-14T02:19:33Z",
+  "parameters": {
+    "m_D": 0.5,
+    "M_R": 2.0,
+    "Omega": 1.118033988749895,
+    "seesaw_ratio_M_R_over_m_D": 4.0
+  },
+  "observable": "lepton_number_violation_probability",
+  "result": {
+    "max_abs_diff_sim_vs_analytic": 7.216449660063518e-16,
+    "t_peak": 1.4049629462081452,
+    "P_max_sim": 0.20000000000000004,
+    "P_max_analytic": 0.19999999999999998,
+    "seesaw_approx_P_max": 0.25,
+    "relative_error": 2.7755575615628914e-16
+  },
+  "threshold": "P_max within 5% of (m_D/Omega)^2; kill if sim vs analytic >1%",
+  "verdict": "PASS",
+  "honest_scope": "toy Hamiltonian classical simulation only; not detection of real dark matter or Majorana neutrinos",
+  "record_hash": "b106b6e6797056c0607874509033fc532558618d6e8ce0f1c3df15f63df4e64c"
+}
