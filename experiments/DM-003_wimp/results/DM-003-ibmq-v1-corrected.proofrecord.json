@@ -1,0 +1,37 @@
+{
+  "experiment_id": "DM-003-ibmq-v1-corrected",
+  "series": "dark-matter-quantum-sim",
+  "model": "wimp_nucleon_exchange",
+  "timestamp_utc": "2026-08-14T03:05:27Z",
+  "parameters": {
+    "g": 1.0,
+    "t_quarter": 0.7853981633974483,
+    "shots": 4096,
+    "backend": "hardware",
+    "ibm_backend": "ibm_marrakesh",
+    "job_id": "d9ugu68u5hac73ah7ak0"
+  },
+  "observable": "spin_flip_probability_01_to_10",
+  "result": {
+    "counts": {
+      "00": 40,
+      "01": 4016,
+      "10": 16,
+      "11": 24
+    },
+    "flip_hw": 0.98046875,
+    "closed_form": 1.0,
+    "relative_error": 0.01953125
+  },
+  "threshold": "IBM Q flip prob within 5% of sin^2(2 g t) at t=pi/(4g)",
+  "verdict": "PASS",
+  "honest_scope": "Corrected re-analysis of original hardware data. The circuit and hardware execution are unchanged; only the observable extraction (Qiskit bitstring mapping) was fixed. See ERRATUM_DM-003.md. Original record preserved as DM-003-ibmq-v1.proofrecord.json.",
+  "correction_note": {
+    "original_experiment_id": "DM-003-ibmq-v1",
+    "original_verdict": "FAIL",
+    "original_extraction": "counts['10'] = 16/4096 = 0.003906 (wrong bitstring)",
+    "corrected_extraction": "counts['01'] = 4016/4096 = 0.980469 (correct bitstring)",
+    "defect": "Qiskit big-endian bitstring convention applied backwards. Bitstring '10' = initial state |01>; bitstring '01' = target state |10>."
+  },
+  "record_hash": "ddab54a2ba81fcc1a43684e36897898de81a47212af5d093e2ff09aa3e63eb15"
+}
