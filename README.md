@@ -117,6 +117,31 @@ cd experiments/DM-002_sterile_neutrino && python run_ibmq.py
 
 ---
 
+### Results summary
+
+Full results with narrative are in [`RESULTS.md`](RESULTS.md).
+
+**Classical layer** (2026-08-01):
+
+| Experiment | Verdict | Key metric |
+|------------|---------|------------|
+| DM-001 Axion | **FAIL** | measured period 1.55 vs target 6.28 (75% off — honest wrong prior) |
+| DM-002 Sterile neutrino | **PASS** | analytic/matrix agree to 7.8e-16 |
+| DM-003 WIMP exchange | **PASS** | flip prob 1.0 vs target 1.0 (floating-point precision) |
+
+**IBM Quantum hardware layer** (2026-08-13, `ibm_marrakesh` 156q Heron r2):
+
+| Experiment | Verdict | Key metric |
+|------------|---------|------------|
+| DM-001 Axion | **HOLD** | ⟨σ_z⟩ = 0.945; single snapshot, full sweep pending |
+| DM-002 Sterile neutrino | **PASS** | P_hw = 0.084 vs analytic 0.088 (4.6% error, within 10%) |
+| DM-003 WIMP exchange | **FAIL** | P_flip = 0.004 vs target 1.0 (hardware noise prevents exchange) |
+
+Three of six possible verdicts are negative (FAIL or HOLD). All are published.
+This is the preregistration discipline working as intended.
+
+---
+
 ### ProofRecord schema
 
 Every run emits a record with this structure (same schema as the RF quantum series):
