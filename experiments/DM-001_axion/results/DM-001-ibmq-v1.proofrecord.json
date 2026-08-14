@@ -1,0 +1,28 @@
+{
+  "experiment_id": "DM-001-ibmq-v1",
+  "series": "dark-matter-quantum-sim",
+  "model": "axion_pq_potential",
+  "timestamp_utc": "2026-08-13T22:18:00Z",
+  "parameters": {
+    "omega_0": 1.0,
+    "lambda": 0.3,
+    "shots": 4096,
+    "backend": "hardware",
+    "ibm_backend": "ibm_marrakesh",
+    "job_id": "d9ugqi535hes73fjtrj0"
+  },
+  "observable": "sigma_z_expectation",
+  "result": {
+    "counts": {
+      "00": 3962,
+      "01": 9,
+      "10": 22,
+      "11": 103
+    },
+    "sigma_z_expectation": 0.945312
+  },
+  "threshold": "IBM Q matches classical within 2 sigma (full time-sweep)",
+  "verdict": "HOLD",
+  "honest_scope": "toy Hamiltonian IBM Quantum hardware simulation; not detection of real dark matter",
+  "record_hash": "d27da5883f016669b568e331a42cf9778952dcae2287c0d169109a34f8a3ea9a"
+}
