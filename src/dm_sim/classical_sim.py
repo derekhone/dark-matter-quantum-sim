@@ -17,7 +17,9 @@ from .hamiltonians import (
     SZ,
     I2,
     axion_hamiltonian,
+    dark_photon_hamiltonian,
     kron,
+    majorana_hamiltonian,
     sterile_neutrino_hamiltonian,
     wimp_hamiltonian,
 )
@@ -126,28 +128,17 @@ def simulate_neutrino(
     can be compared for the kill condition (must agree within 1%).
     """
     H = sterile_neutrino_hamiltonian(delta_m2, energy, theta)
-    # In the FLAVOR basis the mixing lives inside H (its eigenvectors are the
-    # mass eigenstates). The initial pure flavor state |nu_mu> is therefore a
-    # computational basis state |1>, NOT the rotated state -- otherwise it would
-    # be an eigenstate of H and never oscillate.
     psi0 = np.array([0.0, 1.0], dtype=complex)  # |nu_mu>
 
     L = np.linspace(0.0, L_max, n_steps)
     analytic = neutrino_survival_analytic(L, delta_m2, energy, theta)
 
-    # Matrix-exponentiation cross-check. The analytic oscillation phase is
-    # phi = 1.27 * delta_m2 * L / E. For H = omega (-cos2th Z + sin2th X) with
-    # omega = delta_m2/(4E), the survival probability is
-    #   P = 1 - sin^2(2 theta) sin^2(omega t),
-    # so choosing t such that omega * t = phi reproduces the analytic curve
-    # exactly, i.e. t = phi / omega.
-    omega = delta_m2 / (4.0 * energy)  # = |eigenvalue| of H
+    omega = delta_m2 / (4.0 * energy)
     survival_matrix = np.empty(n_steps)
     for i, Li in enumerate(L):
         phi = 1.27 * delta_m2 * Li / energy
         t = phi / omega if omega != 0 else 0.0
         psi = evolve(H, psi0, t)
-        # survival = |<nu_mu|psi(t)>|^2
         amp = np.conjugate(psi0) @ psi
         survival_matrix[i] = float(np.abs(amp) ** 2)
 
@@ -183,16 +174,16 @@ def simulate_wimp(
     which the closed form predicts to be 1.0.
     """
     if t_max is None:
-        t_max = np.pi / g  # one full 2g-Rabi period
+        t_max = np.pi / g
     H = wimp_hamiltonian(g)
     psi0 = np.zeros(4, dtype=complex)
-    psi0[1] = 1.0  # |01> = |up down>
+    psi0[1] = 1.0  # |01>
 
     times = np.linspace(0.0, t_max, n_steps)
     flip = np.empty(n_steps)
     for i, t in enumerate(times):
         psi = evolve(H, psi0, t)
-        flip[i] = float(np.abs(psi[2]) ** 2)  # |10> amplitude squared
+        flip[i] = float(np.abs(psi[2]) ** 2)
 
     analytic = wimp_flip_analytic(g, times)
     max_abs_diff = float(np.max(np.abs(flip - analytic)))
@@ -212,6 +203,149 @@ def simulate_wimp(
     }
 
 
+# ---------------------------------------------------------------------------
+# DM-004 : Dark Photon Kinetic Mixing
+# ---------------------------------------------------------------------------
+def dark_photon_conversion_analytic(
+    t: float | np.ndarray,
+    omega_gamma: float = 1.0,
+    omega_dark: float = 1.3,
+    epsilon: float = 0.5,
+) -> np.ndarray:
+    """Analytic gamma -> dark photon conversion probability.
+
+    P(gamma -> A', t) = [eps^2 / (Delta^2 + eps^2)] sin^2(Omega t)
+
+    where Delta = omega_gamma - omega_dark, Omega = sqrt(Delta^2 + eps^2).
+    """
+    t = np.asarray(t, dtype=float)
+    Delta = omega_gamma - omega_dark
+    Omega = np.sqrt(Delta**2 + epsilon**2)
+    P_max = epsilon**2 / (Delta**2 + epsilon**2)
+    return P_max * np.sin(Omega * t) ** 2
+
+
+def simulate_dark_photon(
+    omega_gamma: float = 1.0,
+    omega_dark: float = 1.3,
+    epsilon: float = 0.5,
+    t_max: float = 15.0,
+    n_steps: int = 500,
+) -> dict:
+    """Simulate gamma -> dark photon conversion probability vs time.
+
+    Compares exact matrix exponentiation with the analytic formula in the
+    single-excitation subspace.  Initial state |10> (one visible photon).
+    """
+    H = dark_photon_hamiltonian(omega_gamma, omega_dark, epsilon)
+    psi0 = np.zeros(4, dtype=complex)
+    psi0[2] = 1.0  # |10>
+
+    times = np.linspace(0.0, t_max, n_steps)
+    analytic = dark_photon_conversion_analytic(
+        times, omega_gamma, omega_dark, epsilon
+    )
+
+    conversion_matrix = np.empty(n_steps)
+    for i, t in enumerate(times):
+        psi = evolve(H, psi0, t)
+        conversion_matrix[i] = float(np.abs(psi[1]) ** 2)
+
+    max_abs_diff = float(np.max(np.abs(analytic - conversion_matrix)))
+
+    Delta = omega_gamma - omega_dark
+    Omega = np.sqrt(Delta**2 + epsilon**2)
+    t_peak = np.pi / (2.0 * Omega)
+    P_max_analytic = epsilon**2 / (Delta**2 + epsilon**2)
+
+    psi_peak = evolve(H, psi0, t_peak)
+    P_max_sim = float(np.abs(psi_peak[1]) ** 2)
+
+    return {
+        "times": times,
+        "conversion_sim": conversion_matrix,
+        "conversion_analytic": analytic,
+        "max_abs_diff": max_abs_diff,
+        "t_peak": t_peak,
+        "P_max_sim": P_max_sim,
+        "P_max_analytic": P_max_analytic,
+        "omega_gamma": omega_gamma,
+        "omega_dark": omega_dark,
+        "epsilon": epsilon,
+        "Delta": Delta,
+        "Omega": Omega,
+    }
+
+
+# ---------------------------------------------------------------------------
+# DM-005 : Majorana Mass Seesaw
+# ---------------------------------------------------------------------------
+def majorana_lnv_analytic(
+    t: float | np.ndarray,
+    m_D: float = 0.5,
+    M_R: float = 2.0,
+) -> np.ndarray:
+    """Analytic lepton-number-violation probability for the seesaw toy model.
+
+    P_LNV(t) = (m_D / Omega)^2 sin^2(Omega t)
+
+    where Omega = sqrt(m_D^2 + (M_R/2)^2).
+    """
+    t = np.asarray(t, dtype=float)
+    Omega = np.sqrt(m_D**2 + (M_R / 2.0) ** 2)
+    amplitude = (m_D / Omega) ** 2
+    return amplitude * np.sin(Omega * t) ** 2
+
+
+def simulate_majorana(
+    m_D: float = 0.5,
+    M_R: float = 2.0,
+    t_max: float = 15.0,
+    n_steps: int = 500,
+) -> dict:
+    """Simulate lepton-number-violation probability vs time for the seesaw model.
+
+    Initial state |00> (active neutrino, lepton number +1).
+    Observable: P(|00> -> |11>) = P_LNV (lepton number violation).
+    """
+    H = majorana_hamiltonian(m_D, M_R)
+    psi0 = np.zeros(4, dtype=complex)
+    psi0[0] = 1.0  # |00>
+
+    times = np.linspace(0.0, t_max, n_steps)
+    analytic = majorana_lnv_analytic(times, m_D, M_R)
+
+    lnv_matrix = np.empty(n_steps)
+    for i, t in enumerate(times):
+        psi = evolve(H, psi0, t)
+        lnv_matrix[i] = float(np.abs(psi[3]) ** 2)
+
+    max_abs_diff = float(np.max(np.abs(analytic - lnv_matrix)))
+
+    Omega = np.sqrt(m_D**2 + (M_R / 2.0) ** 2)
+    t_peak = np.pi / (2.0 * Omega)
+    P_max_analytic = (m_D / Omega) ** 2
+
+    psi_peak = evolve(H, psi0, t_peak)
+    P_max_sim = float(np.abs(psi_peak[3]) ** 2)
+
+    seesaw_approx = 4.0 * m_D**2 / M_R**2
+
+    return {
+        "times": times,
+        "lnv_sim": lnv_matrix,
+        "lnv_analytic": analytic,
+        "max_abs_diff": max_abs_diff,
+        "t_peak": t_peak,
+        "P_max_sim": P_max_sim,
+        "P_max_analytic": P_max_analytic,
+        "seesaw_approx": seesaw_approx,
+        "m_D": m_D,
+        "M_R": M_R,
+        "Omega": Omega,
+    }
+
+
 __all__ = [
     "evolve",
     "expectation",
@@ -220,4 +354,8 @@ __all__ = [
     "simulate_neutrino",
     "wimp_flip_analytic",
     "simulate_wimp",
+    "dark_photon_conversion_analytic",
+    "simulate_dark_photon",
+    "majorana_lnv_analytic",
+    "simulate_majorana",
 ]
