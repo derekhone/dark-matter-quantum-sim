@@ -59,7 +59,7 @@ are published regardless of verdict per the RF covenant.
 |------------|-------|-------------------------|-----------------|---------|
 | **DM-001** | Axion (2-qubit Trotter) | classical ± 2σ (full time-sweep) | `⟨σ_z⟩ = 0.9453`; single snapshot only | **HOLD** |
 | **DM-002** | Sterile neutrino (1-qubit) | hw survival within 10% of analytic | `P_hw = 0.0837` vs analytic `0.0878` (4.6% error) | **PASS** |
-| **DM-003** | WIMP exchange (2-qubit) | hw flip prob within 5% of sin²(2gt) | `P_flip = 0.0039` vs target `1.0` (99.6% error) | **FAIL** |
+| **DM-003** | WIMP exchange (2-qubit) | hw flip prob within 5% of sin²(2gt) | `P_flip = 0.9805` vs target `1.0` (2.0% error) | **~~FAIL~~→PASS** ([erratum](ERRATUM_DM-003.md)) |
 
 ### DM-001 is HOLD — by design
 
@@ -84,24 +84,28 @@ is shallow (single qubit + 6 Trotter steps), which helps explain the good agreem
 
 Raw counts: `{0: 3753, 1: 343}` (total 4096).
 
-### DM-003 is an honest hardware FAIL
+### DM-003 erratum: FAIL→PASS (bitstring extraction defect)
 
-The WIMP exchange coupling circuit predicted a complete spin-flip (`P_flip = 1.0` at the
-quarter-period `t = π/(4g)`), but hardware measured only **0.39%** flip probability — a
-**99.6%** relative error, far beyond the 5% threshold.
+**Erratum (2026-08-14):** The original DM-003 IBM Q runner extracted the
+spin-flip probability from the wrong Qiskit bitstring. The runner read bitstring
+`"10"` (= initial state |01⟩ in the math convention) instead of `"01"` (= target
+state |10⟩). The hardware counts were:
 
-This is a scientifically honest result. The 2-qubit circuit with 6 Trotter steps for
-`H = g(XX + YY)` requires entangling gates (CNOT/CX or equivalent) that are highly
-susceptible to hardware noise. The dominant outcome `|01⟩` (4016 of 4096 shots) shows the
-initial state survived essentially unchanged — the exchange coupling was **not realized on
-hardware**. This demonstrates exactly the gap between noiseless classical simulation (which
-gave PASS with `P_flip = 1.0` to floating-point precision) and real quantum hardware.
+```
+{"00": 40, "01": 4016, "10": 16, "11": 24}
+```
 
-The classical simulation passes; the hardware does not. Both results are published.
+- **Published (wrong):** `counts["10"] = 16/4096 = 0.0039` → 99.6% error → FAIL
+- **Corrected:** `counts["01"] = 4016/4096 = 0.9805` → 2.0% error → **PASS**
 
-Raw counts: `{00: 40, 01: 4016, 10: 16, 11: 24}` (total 4096).
+The original ProofRecord (`DM-003-ibmq-v1.proofrecord.json`) is **preserved
+unchanged**. The corrected analysis is published alongside it as
+`DM-003-ibmq-v1-corrected.proofrecord.json`. The circuit, hardware job, and
+threshold are unchanged; only the observable extraction was fixed.
 
----
+See [ERRATUM_DM-003.md](ERRATUM_DM-003.md) for full details and cross-checks
+against the DM-001 and DM-002 runners.
+
 
 ### Honest scope (updated for hardware layer)
 
@@ -117,7 +121,8 @@ classical counterparts:
 
 - `experiments/DM-001_axion/results/DM-001-ibmq-v1.proofrecord.json`
 - `experiments/DM-002_sterile_neutrino/results/DM-002-ibmq-v1.proofrecord.json`
-- `experiments/DM-003_wimp/results/DM-003-ibmq-v1.proofrecord.json`
+- `experiments/DM-003_wimp/results/DM-003-ibmq-v1.proofrecord.json` (original, preserved)
+- `experiments/DM-003_wimp/results/DM-003-ibmq-v1-corrected.proofrecord.json` (corrected)
 
 ---
 
