@@ -1,0 +1,30 @@
+{
+  "experiment_id": "DM-003-ibmq-v1",
+  "series": "dark-matter-quantum-sim",
+  "model": "wimp_nucleon_exchange",
+  "timestamp_utc": "2026-08-13T22:19:00Z",
+  "parameters": {
+    "g": 1.0,
+    "t_quarter": 0.7853981633974483,
+    "shots": 4096,
+    "backend": "hardware",
+    "ibm_backend": "ibm_marrakesh",
+    "job_id": "d9ugu68u5hac73ah7ak0"
+  },
+  "observable": "spin_flip_probability_01_to_10",
+  "result": {
+    "counts": {
+      "00": 40,
+      "01": 4016,
+      "10": 16,
+      "11": 24
+    },
+    "flip_hw": 0.003906,
+    "closed_form": 1.0,
+    "relative_error": 0.996094
+  },
+  "threshold": "IBM Q flip prob within 5% of sin^2(2 g t) at t=pi/(4g)",
+  "verdict": "FAIL",
+  "honest_scope": "toy Hamiltonian IBM Quantum hardware simulation; not detection of real dark matter",
+  "record_hash": "53e2faaeaf81c5c710312ea288c5763ca9f6d43cfe9aaf58d352c82eea10b1fd"
+}
